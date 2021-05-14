@@ -64,7 +64,6 @@ $total_week = ceil(($total_day + $start_week) / 7);  // 3. 현재 달의 총 주
 						<!-- 시작 요일부터 마지막 날짜까지만 날짜를 보여주도록 -->
 						<?php if ( ($n > 1 || $k >= $start_week) && ($total_day >= $n) ): ?>
 							<!-- 현재 날짜를 보여주고 1씩 더해줌 -->
-							
 							<a href="https://hounjini.cafe24.com/sangwook/read.php/?year=<?php echo $year ?>&month=<?php echo $month ?>&date=<?php echo $n ?>"><?php echo $n++ ?> </a>
 						<?php endif ?>
 					</td> 
