@@ -4,7 +4,8 @@ header('Content-Type: text/html; charset=UTF-8');
 // GET으로 넘겨 받은 year값이 있다면 넘겨 받은걸 year변수에 적용하고 없다면 현재 년도
 $year = isset($_GET['year']) ? $_GET['year'] : date('Y');
 // GET으로 넘겨 받은 month값이 있다면 넘겨 받은걸 month변수에 적용하고 없다면 현재 월
-$month = isset($_GET['month']) ? $_GET['month'] : date('m');
+$month1 = mb_strlen($_GET['month']) == 2 ? $_GET['month'] : "0".$_GET['month'];
+$month  = isset($_GET['month']) ? $month1 : date('m');
 
 $date = "$year-$month-01"; // 현재 날짜
 $time = strtotime($date); // 현재 날짜의 타임스탬프
@@ -12,43 +13,55 @@ $start_week = date('w', $time); // 1. 시작 요일
 $total_day = date('t', $time); // 2. 현재 달의 총 날짜
 $total_week = ceil(($total_day + $start_week) / 7); // 3. 현재 달의 총 주차
 
+// 출석부를 읽어와서 해쉬맵으로 만듦
+$fp = fopen("save/Attendance.txt", "r") or die("파일을 열 수 없습니다！");
+$people = "";
+// 출석부 해쉬맵
+$array = array();
+
+while (! feof($fp)) {
+    $str = fgets($fp);
+    
+    if (strpos($str, "stop") === false) {
+        $strarr = explode(' ', $str);
+        
+        for ($k = 1; $k <= $total_day; $k ++) {
+            $array[$strarr[1]][$k] = "<td> </td>";
+        }
+    } else {
+        break;
+    }
+}
+
 // 데이터를 읽어서 반을 구분하여 출력함
 $fp = fopen("save/name_table.txt", "r") or die("파일을 열 수 없습니다！");
 $rose = "";
 $sunflower = "";
-
+$people = "";
+$bbb="";
 while (! feof($fp)) {
     $str = fgets($fp);
     $strarr = explode(' ', $str);
     
+    $day = $strarr[0];
     $time = $strarr[1];
     $clas = $strarr[2];
     $name = $strarr[3];
     $qr = $strarr[4];
     
-    if (strpos($str, "2021.05") !== false) {
-        $u_arr1[] = $str;
+    if (strpos($str, $year.".".$month) !== false) {
+        $array[$name][explode('.', $day)[2] * 1] = "<td>O</td>";
     }
-    for($i = 0; $i<=count($u_arr1); $i++){
-        $u_arr2[] = $u_arr1[$i];
+}
+
+
+foreach ($array as $key => $value) {
+    $aaa = "<tr><td>".$key."</td>";
+    for ($k = 1; $k <= $total_day; $k ++) {
+        $aaa .= $array[$key][$k];
     }
-    if (strpos($str, "신분남") !== false && strpos($str, "2021.05") !== false) {
-        
-        $sunflower .= "<tr><td>" . $name ."</td>";
-        
-        for ($k = 1; $k <= $total_day; $k++){
-            $d= mb_strlen($k) == 2 ? $k." " : "0".$k;
-            
-            if(strpos($str, "2021.05".".".$d) !== false){
-                $sunflower .="<th>o</th>";
-            } else{
-                $sunflower .="<th>x</th>";
-            }
-        }
-        $sunflower .="</tr>";
-    }
-    
-    
+    $aaa .= "</tr>";
+    $bbb .= $aaa;
 }
 fclose($fp);
 ?>
@@ -123,9 +136,7 @@ table td {
 			</tr> 
 		<?php endfor; ?> 
 	</table>
-	<br>
-	<br>
-	<br>
+	<h1><?php echo $month?>월 출석현황</h1>
 	<table border="1">
 		<tr>
 			<th>공백</th>
@@ -135,15 +146,7 @@ table td {
 			</th> 
 			<?php endfor; ?>
 		</tr>
-		<tr>
-			<th>공백</th><th colspan="<?php print $total_day?>">해바라기</th>
-		</tr>
-		
-			<?php print $sunflower?> 
-		
-		<tr>
-			<th>공백</th><th colspan="<?php print $total_day?>">장미</th>
-		</tr>
+		<?php echo $bbb?>
 	</table>
 </body>
 </html>
