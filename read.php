@@ -1,12 +1,32 @@
 <?php
 header('Content-Type: text/html; charset=UTF-8');
 
-// 날짜 데이터 생성 및 받아오기
+// 날짜 데이터 수정 및 받아오기
 date_default_timezone_set('Asia/Seoul');
 $year = $_REQUEST["year"];
 $month = mb_strlen($_REQUEST["month"]) == 2 ? $_REQUEST["month"] : "0" . $_REQUEST["month"];
 $day = mb_strlen($_REQUEST["day"]) == 2 ? $_REQUEST["day"] : "0" . $_REQUEST["day"];
 $date = $year . "." . $month . "." . $day;
+
+// 출석부를 읽어와서 해쉬맵으로 만듦
+$fp = fopen("save/Attendance.txt", "r") or die("파일을 열 수 없습니다！");
+// 출석부 해쉬맵
+$array = array();
+
+while (! feof($fp)) {
+    $str = fgets($fp);
+    
+    if (strpos($str, "stop") === false) {
+        $strarr = explode(' ', $str);
+        
+        for ($k = 1; $k <= $total_day; $k ++) {
+            $array[$strarr[1]][$k] = "<td> </td>";
+        }
+    } else {
+        break;
+    }
+}
+
 
 // 데이터를 읽어서 반을 구분하여 출력함
 $fp = fopen("save/name_table.txt", "r") or die("파일을 열 수 없습니다！");
