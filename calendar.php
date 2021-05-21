@@ -40,6 +40,7 @@ $sunflower = "";
 $people = "";
 $bbb="";
 while (! feof($fp)) {
+    
     $str = fgets($fp);
     $strarr = explode(' ', $str);
     
