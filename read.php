@@ -16,16 +16,21 @@ $array = array();
 while (! feof($fp)) {
     $str = fgets($fp);
     
-    if (strpos($str, "stop") === false) {
-        $strarr = explode(' ', $str);
-        
-        for ($k = 1; $k <= $total_day; $k ++) {
-            $array[$strarr[1]][$k] = "<td> </td>";
-        }
-    } else {
-        break;
-    }
+    $strarr = explode(' ', $str);
+    
+    $clas = $strarr[0];
+    $name = $strarr[1];
+    $qr = $strarr[2];
+    $array[$qr] = $clas . " " . $name;
+    echo strlen($qr)."<br>";
 }
+
+foreach ($array as $key => $value) {
+    echo $key."<br>";
+}
+
+echo $array['%EC%B5%9C%EC%88%98%EB%B9%88
+']."<br>"; // 1
 
 
 // 데이터를 읽어서 반을 구분하여 출력함
@@ -42,13 +47,13 @@ while (! feof($fp)) {
     $name = $strarr[3];
     $qr = $strarr[4];
     
+    
     if (strpos($str, $date) !== false) {
         
         if (strpos($rose, $name) === false && strpos($sunflower, $name) === false) {
             
             if (strpos($str, "장미") !== false || strpos($str, "고급2") !== false) {
                 $rose .= "<tr><td>" . $time . " " . $clas . " " . $name . "</td></tr>";
-                
             } else if (strpos($str, "해바라기") !== false) {
                 $sunflower .= "<tr><td>" . $time . " " . $clas . " " . $name . "</td></tr>";
             }
