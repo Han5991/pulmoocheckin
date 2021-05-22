@@ -20,23 +20,15 @@ while (! feof($fp)) {
     
     $clas = $strarr[0];
     $name = $strarr[1];
-    $qr = $strarr[2];
+    $qr = substr($strarr[2], 0, - 2);
     $array[$qr] = $clas . " " . $name;
-    echo strlen($qr)."<br>";
 }
-
-foreach ($array as $key => $value) {
-    echo $key."<br>";
-}
-
-echo $array['%EC%B5%9C%EC%88%98%EB%B9%88
-']."<br>"; // 1
-
 
 // 데이터를 읽어서 반을 구분하여 출력함
 $fp = fopen("save/name_table.txt", "r") or die("파일을 열 수 없습니다！");
-$rose = "";
-$sunflower = "";
+$Advanced2 = "";
+$Advanced1 = "";
+$Middle = "";
 
 while (! feof($fp)) {
     $str = fgets($fp);
@@ -45,18 +37,18 @@ while (! feof($fp)) {
     $time = $strarr[1];
     $clas = $strarr[2];
     $name = $strarr[3];
-    $qr = $strarr[4];
-    
+    $qr = substr($strarr[4], 0, - 1);
     
     if (strpos($str, $date) !== false) {
         
-        if (strpos($rose, $name) === false && strpos($sunflower, $name) === false) {
-            
-            if (strpos($str, "장미") !== false || strpos($str, "고급2") !== false) {
-                $rose .= "<tr><td>" . $time . " " . $clas . " " . $name . "</td></tr>";
-            } else if (strpos($str, "해바라기") !== false) {
-                $sunflower .= "<tr><td>" . $time . " " . $clas . " " . $name . "</td></tr>";
-            }
+        $ccc = $array[$qr];
+        
+        if (strpos($ccc, "고급2") !== false) {
+            $Advanced2 .= "<tr><td>" . $time . " " . $ccc . "</td></tr>";
+        } else if (strpos($ccc, "고급1") !== false) {
+            $Advanced1 .= "<tr><td>" . $time . " " . $ccc . "</td></tr>";
+        } else if (strpos($ccc, "중급") !== false) {
+            $Middle .= "<tr><td>" . $time . " " . $ccc . "</td></tr>";
         }
     }
 }
@@ -72,19 +64,28 @@ fclose($fp);
 	<?php print "$year 년 $month 월 $day 일 출석현황" ?>
 	<table>
 		<tr>
-			<th>장미반</th>
+			<th>고급2</th>
 		</tr>
         <?php
-        mb_strlen($rose) == 0 ? print "<tr><td>아무도 안 오셨어요ㅜㅜ</td></tr>" : print $rose;
+        mb_strlen($Advanced2) == 0 ? print "<tr><td>아무도 안 오셨어요ㅜㅜ</td></tr>" : print $Advanced2;
         ?>
 	</table>
 
 	<table>
 		<tr>
-			<th>해바라기반</th>
+			<th>고급1</th>
 		</tr>
         <?php
-        mb_strlen($sunflower) == 0 ? print "<tr><td>아무도 안 오셨어요ㅜㅜ</td></tr>" : print $sunflower;
+        mb_strlen($Advanced1) == 0 ? print "<tr><td>아무도 안 오셨어요ㅜㅜ</td></tr>" : print $Advanced1;
+        ?>
+	</table>
+
+	<table>
+		<tr>
+			<th>중급</th>
+		</tr>
+        <?php
+        mb_strlen($Middle) == 0 ? print "<tr><td>아무도 안 오셨어요ㅜㅜ</td></tr>" : print $Middle;
         ?>
 	</table>
 </body>
