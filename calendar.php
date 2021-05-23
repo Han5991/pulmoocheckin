@@ -3,9 +3,10 @@ header('Content-Type: text/html; charset=UTF-8');
 
 // GET으로 넘겨 받은 year값이 있다면 넘겨 받은걸 year변수에 적용하고 없다면 현재 년도
 $year = isset($_GET['year']) ? $_GET['year'] : date('Y');
+
 // GET으로 넘겨 받은 month값이 있다면 넘겨 받은걸 month변수에 적용하고 없다면 현재 월
-$month1 = mb_strlen($_GET['month']) == 2 ? $_GET['month'] : "0".$_GET['month'];
-$month  = isset($_GET['month']) ? $month1 : date('m');
+$month1 = mb_strlen($_GET['month']) == 2 ? $_GET['month'] : "0" . $_GET['month'];
+$month = isset($_GET['month']) ? $month1 : date('m');
 
 $date = "$year-$month-01"; // 현재 날짜
 $time = strtotime($date); // 현재 날짜의 타임스탬프
@@ -15,9 +16,11 @@ $total_week = ceil(($total_day + $start_week) / 7); // 3. 현재 달의 총 주�
 
 // 출석부를 읽어와서 해쉬맵으로 만듦
 $fp = fopen("save/Attendance.txt", "r") or die("파일을 열 수 없습니다！");
-$people = "";
 // 출석부 해쉬맵
 $array = array();
+$go1 = 11;
+$go2 = 8;
+$Mid = 11;
 
 while (! feof($fp)) {
     $str = fgets($fp);
@@ -25,22 +28,23 @@ while (! feof($fp)) {
     if (strpos($str, "stop") === false) {
         $strarr = explode(' ', $str);
         
+        $clas = $strarr[0];
+        $name = $strarr[1];
+        $qr = substr($strarr[2], 0, - 2);
+        
         for ($k = 1; $k <= $total_day; $k ++) {
-            $array[$strarr[1]][$k] = "<td> </td>";
+            $array[$name][$k] = "<td> </td>";
         }
+        $array[$name][$total_day + 1] = $clas;
     } else {
         break;
     }
 }
 
+$many = 0;
 // 데이터를 읽어서 반을 구분하여 출력함
 $fp = fopen("save/name_table.txt", "r") or die("파일을 열 수 없습니다！");
-$rose = "";
-$sunflower = "";
-$people = "";
-$bbb="";
 while (! feof($fp)) {
-    
     $str = fgets($fp);
     $strarr = explode(' ', $str);
     
@@ -50,19 +54,37 @@ while (! feof($fp)) {
     $name = $strarr[3];
     $qr = $strarr[4];
     
-    if (strpos($str, $year.".".$month) !== false) {
+    if (strpos($str, $year . "." . $month) !== false) {
         $array[$name][explode('.', $day)[2] * 1] = "<td>O</td>";
     }
 }
-
-
+$bbb = "";
 foreach ($array as $key => $value) {
-    $aaa = "<tr><td>".$key."</td>";
+    $r = "250";
+    $g = "255";
+    $b = "250";
+    $rgb = $r . "," . $g . "," . $b;
+    $aaa = "<tr><td style='background-color: rgb(" . $rgb . ");'>" . $key . "</td>";
     for ($k = 1; $k <= $total_day; $k ++) {
         $aaa .= $array[$key][$k];
+        
+        if (strpos($array[$key][$k], "O") !== false) {
+            $many ++;
+        }
     }
-    $aaa .= "</tr>";
+    
+    if (strpos($array[$key][$total_day + 1], "고급1") !== false) {
+        $aaa .= "<th>" . round($many / $go1 * 100) . "%</th></tr>";
+        $r = 250 - round($many / $go1 * 100);
+        $b = 250 - round($many / $go1 * 100);
+    } else if (strpos($array[$key][$total_day + 1], "고급2") !== false) {
+        $aaa .= "<th>" . round($many / $go2 * 100) . "%</th></tr>";
+    } else if (strpos($array[$key][$total_day + 1], "중급") !== false) {
+        $aaa .= "<th>" . round($many / $Mid * 100) . "%</th></tr>";
+    }
+    
     $bbb .= $aaa;
+    $many = 0;
 }
 fclose($fp);
 ?>
@@ -137,6 +159,10 @@ table td {
 			</tr> 
 		<?php endfor; ?> 
 	</table>
+	<br> 시작일
+	<input type="date"> 종료일
+	<input type="date">
+	<br>
 	<h1><?php echo $month?>월 출석현황</h1>
 	<table border="1">
 		<tr>
@@ -144,8 +170,9 @@ table td {
 			<?php for ($k = 1; $k <= $total_day; $k++): ?> 
 			<th>
 				<?php echo $k ?>
-			</th> 
+			</th>
 			<?php endfor; ?>
+			<th>-출석율-</th>
 		</tr>
 		<?php echo $bbb?>
 	</table>
