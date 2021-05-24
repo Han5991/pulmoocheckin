@@ -18,10 +18,6 @@ $total_week = ceil(($total_day + $start_week) / 7); // 3. 현재 달의 총 주�
 $fp = fopen("save/Attendance.txt", "r") or die("파일을 열 수 없습니다！");
 // 출석부 해쉬맵
 $array = array();
-$go1 = 11;
-$go2 = 8;
-$Mid = 11;
-
 while (! feof($fp)) {
     $str = fgets($fp);
     
@@ -33,14 +29,18 @@ while (! feof($fp)) {
         $qr = substr($strarr[2], 0, - 2);
         
         for ($k = 1; $k <= $total_day; $k ++) {
-            $array[$name][$k] = "<td> </td>";
+            $array[$qr][$k] = "<td> </td>";
         }
-        $array[$name][$total_day + 1] = $clas;
+        $array[$qr][$total_day + 1] = $clas;
+        $array[$qr][$total_day + 2] = $name;
     } else {
         break;
     }
 }
 
+$go1 = 11;
+$go2 = 8;
+$Mid = 11;
 $many = 0;
 // 데이터를 읽어서 반을 구분하여 출력함
 $fp = fopen("save/name_table.txt", "r") or die("파일을 열 수 없습니다！");
@@ -52,39 +52,49 @@ while (! feof($fp)) {
     $time = $strarr[1];
     $clas = $strarr[2];
     $name = $strarr[3];
-    $qr = $strarr[4];
+    $qr = substr($strarr[4], 0, - 1);
     
     if (strpos($str, $year . "." . $month) !== false) {
-        $array[$name][explode('.', $day)[2] * 1] = "<td>O</td>";
+        $array[$qr][explode('.', $day)[2] * 1] = "<td>O</td>";
     }
 }
 $bbb = "";
 foreach ($array as $key => $value) {
-    $r = "250";
-    $g = "255";
-    $b = "250";
-    $rgb = $r . "," . $g . "," . $b;
-    $aaa = "<tr><td style='background-color: rgb(" . $rgb . ");'>" . $key . "</td>";
-    for ($k = 1; $k <= $total_day; $k ++) {
-        $aaa .= $array[$key][$k];
-        
-        if (strpos($array[$key][$k], "O") !== false) {
-            $many ++;
+    $name = $array[$key][$total_day + 2];
+    $clas = $array[$key][$total_day + 1];
+    
+    if (! empty($name) || ! empty($clas)) {
+        $aaa = "";
+        for ($k = 1; $k <= $total_day; $k ++) {
+            $aaa .= $array[$key][$k];
+            
+            if (strpos($array[$key][$k], "O") !== false) {
+                $many ++;
+            }
         }
+        
+        if (strpos($array[$key][$total_day + 1], "고급1") !== false) {
+            $r = 250 - round($many / $go1 * 100) * 1.5;
+            $b = 250 - round($many / $go1 * 100) * 1.5;
+            $rgb = $r . "," . "250" . "," . $b;
+            $aaa .= "<th>" . round($many / $go1 * 100) . "%</th></tr>";
+        } else if (strpos($array[$key][$total_day + 1], "고급2") !== false) {
+            $r = 250 - round($many / $go2 * 100) * 1.5;
+            $b = 250 - round($many / $go2 * 100) * 1.5;
+            $rgb = $r . "," . "250" . "," . $b;
+            $aaa .= "<th>" . round($many / $go2 * 100) . "%</th></tr>";
+        } else if (strpos($array[$key][$total_day + 1], "중급") !== false) {
+            $r = 250 - round($many / $Mid * 100) * 1.5;
+            $b = 250 - round($many / $Mid * 100) * 1.5;
+            $rgb = $r . "," . "250" . "," . $b;
+            $aaa .= "<th>" . round($many / $Mid * 100) . "%</th></tr>";
+        }
+        $asd = "<tr><td style='background-color: rgb(" . $rgb . ");' >" . $clas . "_" . $name . "</td>";
+        $bbb .= $asd . $aaa;
+        $many = 0;
+        $r = 0;
+        $b = 0;
     }
-    
-    if (strpos($array[$key][$total_day + 1], "고급1") !== false) {
-        $aaa .= "<th>" . round($many / $go1 * 100) . "%</th></tr>";
-        $r = 250 - round($many / $go1 * 100);
-        $b = 250 - round($many / $go1 * 100);
-    } else if (strpos($array[$key][$total_day + 1], "고급2") !== false) {
-        $aaa .= "<th>" . round($many / $go2 * 100) . "%</th></tr>";
-    } else if (strpos($array[$key][$total_day + 1], "중급") !== false) {
-        $aaa .= "<th>" . round($many / $Mid * 100) . "%</th></tr>";
-    }
-    
-    $bbb .= $aaa;
-    $many = 0;
 }
 fclose($fp);
 ?>
@@ -94,6 +104,8 @@ fclose($fp);
 <head>
 <meta charset="UTF-8">
 <title>calendar</title>
+<base href="https://hounjini.cafe24.com/sangwook/calendar.php">
+<script type="text/javascript" src="js/jquery-3.5.1.min.js"></script>
 <style type="text/css">
 table {
 	border-spacing: 0;
@@ -160,8 +172,18 @@ table td {
 		<?php endfor; ?> 
 	</table>
 	<br> 시작일
-	<input type="date"> 종료일
-	<input type="date">
+	<input name="start" type="date"> 종료일
+	<input name="end" type="date">
+	<input type="button" id="aaa" onclick="$asd();" value="제출">
+	<script type="text/javascript">
+	
+	$asd = function() {
+		var $start = $('input[name=start]').val();
+		var $end = $('input[name=end]').val();
+		console.log($start+$end);	
+	}
+    
+	</script>
 	<br>
 	<h1><?php echo $month?>월 출석현황</h1>
 	<table border="1">
