@@ -38,10 +38,35 @@ while (! feof($fp)) {
     }
 }
 
-$go1 = 11;
-$go2 = 8;
-$Mid = 11;
+// go1 : 월수목
+// go2 : 목금
+// Mid : 월수금
+$go1 = 0;
+$go2 = 0;
+$Mid = 0;
 $many = 0;
+
+for ($i = 1; $i < $total_day; $i ++) {
+    switch (date('w', strtotime($year . "-" . $month . "-" . $i))) {
+        case '1':
+            $go1 ++;
+            $Mid ++;
+            break;
+        case '3':
+            $go1 ++;
+            $Mid ++;
+            break;
+        case '4':
+            $go1 ++;
+            $go2 ++;
+            break;
+        case '5':
+            $go2 ++;
+            $Mid ++;
+            break;
+    }
+}
+
 // 데이터를 읽어서 반을 구분하여 출력함
 $fp = fopen("save/name_table.txt", "r") or die("파일을 열 수 없습니다！");
 while (! feof($fp)) {
@@ -58,6 +83,8 @@ while (! feof($fp)) {
         $array[$qr][explode('.', $day)[2] * 1] = "<td>O</td>";
     }
 }
+fclose($fp);
+
 $bbb = "";
 foreach ($array as $key => $value) {
     $name = $array[$key][$total_day + 2];
@@ -96,7 +123,6 @@ foreach ($array as $key => $value) {
         $b = 0;
     }
 }
-fclose($fp);
 ?>
 
 <!DOCTYPE html>
