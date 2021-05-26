@@ -39,16 +39,16 @@ while (! feof($fp)) {
     $name = $strarr[3];
     $qr = substr($strarr[4], 0, - 1);
     
-    if (strpos($str, $date) !== false) {
-        
-        $ccc = $array[$qr];
-        
-        if (strpos($ccc, "고급2") !== false) {
-            $Advanced2 .= "<tr><td>" . $time . " " . $ccc . "</td></tr>";
-        } else if (strpos($ccc, "고급1") !== false) {
-            $Advanced1 .= "<tr><td>" . $time . " " . $ccc . "</td></tr>";
-        } else if (strpos($ccc, "중급") !== false) {
-            $Middle .= "<tr><td>" . $time . " " . $ccc . "</td></tr>";
+    if (strpos($Advanced2, $name) === false && strpos($Advanced1, $name) === false && strpos($Middle, $name) === false) {
+        if (strpos($str, $date) !== false) {
+            $ccc = $array[$qr];
+            if (strpos($ccc, "고급2") !== false) {
+                $Advanced2 .= "<tr><td>" . $time . " " . $ccc . "</td></tr>";
+            } else if (strpos($ccc, "고급1") !== false) {
+                $Advanced1 .= "<tr><td>" . $time . " " . $ccc . "</td></tr>";
+            } else if (strpos($ccc, "중급") !== false) {
+                $Middle .= "<tr><td>" . $time . " " . $ccc . "</td></tr>";
+            }
         }
     }
 }
