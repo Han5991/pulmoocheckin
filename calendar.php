@@ -45,7 +45,7 @@ $go1 = 0;
 $go2 = 0;
 $Mid = 0;
 $many = 0;
-
+// 기간을 설정해서 요일을 체크하는 반복문
 for ($i = 1; $i < $total_day; $i ++) {
     switch (date('w', strtotime($year . "-" . $month . "-" . $i))) {
         case '1':
@@ -116,7 +116,7 @@ foreach ($array as $key => $value) {
             $rgb = $r . "," . "250" . "," . $b;
             $aaa .= "<th>" . round($many / $Mid * 100) . "%</th></tr>";
         }
-        $asd = "<tr><td style='background-color: rgb(" . $rgb . ");' >" . $clas . "_" . $name . "</td>";
+        $asd = "<tr><td><input type='checkbox' value='" . $key . "' name = qr[]></td><td style='background-color: rgb(" . $rgb . ");' >" . $clas . "_" . $name . "</td>";
         $bbb .= $asd . $aaa;
         $many = 0;
         $r = 0;
@@ -197,32 +197,24 @@ table td {
 			</tr> 
 		<?php endfor; ?> 
 	</table>
-	<br> 시작일
-	<input name="start" type="date"> 종료일
-	<input name="end" type="date">
-	<input type="button" id="aaa" onclick="$asd();" value="제출">
-	<script type="text/javascript">
-	
-	$asd = function() {
-		var $start = $('input[name=start]').val();
-		var $end = $('input[name=end]').val();
-		console.log($start+$end);	
-	}
-    
-	</script>
 	<br>
-	<h1><?php echo $month?>월 출석현황</h1>
-	<table border="1">
-		<tr>
-			<th>공백</th>
+	<form action="read2.php" method="post">
+		시작일 <input name="start" type="date"> 종료일 <input name="end" type="date">
+		<input type="submit" value="제출"> <br>
+		<h1><?php echo $month?>월 출석현황</h1>
+		<table border="1">
+			<tr>
+				<th>체크</th>
+				<th>공백</th>
 			<?php for ($k = 1; $k <= $total_day; $k++): ?> 
 			<th>
 				<?php echo $k ?>
 			</th>
 			<?php endfor; ?>
 			<th>-출석율-</th>
-		</tr>
+			</tr>
 		<?php echo $bbb?>
 	</table>
+	</form>
 </body>
 </html>
