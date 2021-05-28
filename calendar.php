@@ -204,7 +204,7 @@ table td {
 		<h1><?php echo $month?>월 출석현황</h1>
 		<table border="1">
 			<tr>
-				<th>체크</th>
+				<th>체크박스</th>
 				<th>공백</th>
 			<?php for ($k = 1; $k <= $total_day; $k++): ?> 
 			<th>
