@@ -20,14 +20,14 @@ $fp = fopen("save/Attendance.txt", "r") or die("파일을 열 수 없습니다�
 $array = array();
 while (! feof($fp)) {
     $str = fgets($fp);
-    
+
     if (strpos($str, "stop") === false) {
         $strarr = explode(' ', $str);
-        
+
         $clas = $strarr[0];
         $name = $strarr[1];
         $qr = substr($strarr[2], 0, - 2);
-        
+
         for ($k = 1; $k <= $total_day; $k ++) {
             $array[$qr][$k] = "<td> </td>";
         }
@@ -72,13 +72,13 @@ $fp = fopen("save/name_table.txt", "r") or die("파일을 열 수 없습니다�
 while (! feof($fp)) {
     $str = fgets($fp);
     $strarr = explode(' ', $str);
-    
+
     $day = $strarr[0];
     $time = $strarr[1];
     $clas = $strarr[2];
     $name = $strarr[3];
     $qr = substr($strarr[4], 0, - 1);
-    
+
     if (strpos($str, $year . "." . $month) !== false) {
         $array[$qr][explode('.', $day)[2] * 1] = "<td>O</td>";
     }
@@ -89,17 +89,17 @@ $bbb = "";
 foreach ($array as $key => $value) {
     $name = $array[$key][$total_day + 2];
     $clas = $array[$key][$total_day + 1];
-    
+
     if (! empty($name) || ! empty($clas)) {
         $aaa = "";
         for ($k = 1; $k <= $total_day; $k ++) {
             $aaa .= $array[$key][$k];
-            
+
             if (strpos($array[$key][$k], "O") !== false) {
                 $many ++;
             }
         }
-        
+
         if (strpos($array[$key][$total_day + 1], "고급1") !== false) {
             $r = 250 - round($many / $go1 * 100) * 1.5;
             $b = 250 - round($many / $go1 * 100) * 1.5;
@@ -214,7 +214,7 @@ table td {
 			<th>-출석율-</th>
 			</tr>
 		<?php echo $bbb?>
-	</table>
+		</table>
 	</form>
 </body>
 </html>
