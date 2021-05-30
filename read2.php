@@ -44,7 +44,7 @@ while (! feof($fp)) {
 <title>calendar</title>
 </head>
 <body>
-	<table border="1">
+	<table border="2">
 		<tr>
 			<th>공백</th>
 			<?php for ($k = 1; $k <= $days; $k++): ?> 
