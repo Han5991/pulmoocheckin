@@ -35,6 +35,48 @@ while (! feof($fp)) {
         break;
     }
 }
+
+// go1 : 월수목
+// go2 : 목금
+// Mid : 월수금
+$go1 = 0;
+$go2 = 0;
+$Mid = 0;
+$many = 0;
+// 달계산이 어렵다 생각해보자
+$datearr1 = explode('-', $_REQUEST["start"]);
+$year1 = $datearr1[0];
+$month1 = $datearr1[1];
+$day1 = $datearr1[2];
+
+$datearr2 = explode('-', $_REQUEST["end"]);
+$year2 = $datearr2[0];
+$month2 = $datearr2[1];
+$day2 = $datearr2[2];
+// 기간을 설정해서 요일을 체크하는 반복문
+for ($i = $day1; $i <= $day2; $i ++) {
+    switch (date('w', strtotime($year1 . "-" . $month1 . "-" . $i))) {
+        case '1':
+            $go1 ++;
+            $Mid ++;
+            break;
+        case '3':
+            $go1 ++;
+            $Mid ++;
+            break;
+        case '4':
+            $go1 ++;
+            $go2 ++;
+            break;
+        case '5':
+            $go2 ++;
+            $Mid ++;
+            break;
+    }
+}
+echo "go1 : " . $go1 . "<br>";
+echo "go2 : " . $go2 . "<br>";
+echo "Mid : " . $Mid;
 ?>
 
 <!DOCTYPE html>
@@ -44,7 +86,7 @@ while (! feof($fp)) {
 <title>calendar</title>
 </head>
 <body>
-	<table border="2">
+	<table border="1">
 		<tr>
 			<th>공백</th>
 			<?php for ($k = 1; $k <= $days; $k++): ?> 
