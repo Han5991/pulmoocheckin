@@ -43,6 +43,7 @@ $go1 = 0;
 $go2 = 0;
 $Mid = 0;
 $many = 0;
+
 // 달계산이 어렵다 생각해보자
 $datearr1 = explode('-', $_REQUEST["start"]);
 $year1 = $datearr1[0];
