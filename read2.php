@@ -3,11 +3,8 @@ header('Content-Type: text/html; charset=UTF-8');
 
 date_default_timezone_set('Asia/Seoul');
 
-$dateDifference = abs(strtotime($_REQUEST["end"]) - strtotime($_REQUEST["start"]));
-
-$years = floor($dateDifference / (365 * 60 * 60 * 24));
-$months = floor(($dateDifference - $years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24));
-$days = floor(($dateDifference - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24) / (60 * 60 * 24));
+$차이    = date_diff(new DateTime($_REQUEST["start"]), new DateTime($_REQUEST["end"]));
+$days = $차이->days;
 
 $qrs = $_REQUEST["qr"];
 // 출석부를 읽어와서 해쉬맵으로 만듦
@@ -36,6 +33,10 @@ while (! feof($fp)) {
     }
 }
 
+
+echo $days;
+
+
 // go1 : 월수목
 // go2 : 목금
 // Mid : 월수금
@@ -44,18 +45,9 @@ $go2 = 0;
 $Mid = 0;
 $many = 0;
 
-// 달계산이 어렵다 생각해보자
-$datearr1 = explode('-', $_REQUEST["start"]);
-$year1 = $datearr1[0];
-$month1 = $datearr1[1];
-$day1 = $datearr1[2];
-
-$datearr2 = explode('-', $_REQUEST["end"]);
-$year2 = $datearr2[0];
-$month2 = $datearr2[1];
-$day2 = $datearr2[2];
 // 기간을 설정해서 요일을 체크하는 반복문
-for ($i = $day1; $i <= $day2; $i ++) {
+for ($i = $day1; $i <= $day1+$days; $i ++) {
+    echo $year1 . "-" . $month1 . "-" . $i."<br>";
     switch (date('w', strtotime($year1 . "-" . $month1 . "-" . $i))) {
         case '1':
             $go1 ++;
