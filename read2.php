@@ -33,9 +33,7 @@ while (! feof($fp)) {
     }
 }
 
-
 echo $days;
-
 
 // go1 : 월수목
 // go2 : 목금
@@ -79,7 +77,7 @@ echo "Mid : " . $Mid;
 <title>calendar</title>
 </head>
 <body>
-	<table border="1">
+	<table style="border: 1">
 		<tr>
 			<th>공백</th>
 			<?php for ($k = 1; $k <= $days; $k++): ?> 
